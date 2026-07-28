@@ -6,9 +6,9 @@ This project is an analysis of a dataset from the UC Irvine Machine Learning Rep
 online retail. Using python, the goal is to understand customer behavior and gather metrics. 
 
 It answers questions like:
-    - **Which items are being bought the most?**
-    - **Which items are bringing in the most revenue?**
-    - **Who are returning customers? What is the probability a customer returns?**
+- **Which items are being bought the most?**
+- **Which items are bringing in the most revenue?**
+- **Who are returning customers? What is the probability a customer returns?** 
 
 
 ## Dataset
