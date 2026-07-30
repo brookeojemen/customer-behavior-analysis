@@ -4,8 +4,9 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
 
+
 df = pd.read_csv("data/retail_data.csv", encoding="latin1")
-df = df.drop(columns=['Country', 'Description','InvoiceDate'])
+df = df.drop(columns=['Country', 'Description'])
 
 fault_StockCode = ["POST", "DOT", "D"]
 
@@ -13,24 +14,31 @@ df = df.dropna()
 df = df[df["Quantity"] > 0]
 df = df[df["UnitPrice"] > 0]
 df = df[~df["StockCode"].isin(fault_StockCode)]
-
+df["InvoiceDate"] = pd.to_datetime(df["InvoiceDate"])
 
 orders_per_customer = df["InvoiceNo"].groupby(df["CustomerID"]).nunique()
 total_quantity_per_customer= df["Quantity"].groupby(df["CustomerID"]).sum()
 total_spent_per_customer = df["Quantity"].mul(df["UnitPrice"]).groupby(df["CustomerID"]).sum()
 average_order_value = total_spent_per_customer/orders_per_customer
+recent_date = df["InvoiceDate"].max()
+print(f"Most recent date : {recent_date}")
+recent_customer_order = df["InvoiceDate"].groupby(df["CustomerID"]).max()
+recency_delta = recent_date - recent_customer_order
+recency = recency_delta.dt.days
+### RFM
 
 
 customer_metrics_df = pd.DataFrame({
     "Orders": orders_per_customer, 
     "Total Quantity": total_quantity_per_customer, 
     "Total Spent": total_spent_per_customer, 
-    "Average Order Value": average_order_value
+    "Average Order Value": average_order_value,
+    "Recency": recency
 })
 
 customer_metrics_df.info()
 print(customer_metrics_df.describe())
-features = customer_metrics_df[["Orders", "Total Quantity", "Total Spent"]]
+features = customer_metrics_df[["Orders", "Total Spent", "Recency"]]
 
 scaler = StandardScaler()
 scaled_features = scaler.fit_transform(features)
@@ -74,25 +82,25 @@ kmeans_2 = KMeans(n_clusters= 2, random_state=42, n_init=10)
 customer_metrics_df["Cluster_2"] = kmeans_2.fit_predict(scaled_features)
 centroids_2 = scaler.inverse_transform(kmeans_2.cluster_centers_)
 plot.figure()
-plot.scatter(customer_metrics_df["Orders"],customer_metrics_df["Total Quantity"], c=kmeans_2.labels_,  alpha=0.3, s = 10)
+plot.scatter(customer_metrics_df["Recency"],customer_metrics_df["Orders"], c=kmeans_2.labels_,  alpha=0.3, s = 10)
 plot.scatter(
-    centroids_2[:, 0], 
-    centroids_2[:, 1],
+    centroids_2[:, 2], 
+    centroids_2[:, 0],
     marker ="X",
     s = 50,
     edgecolors= "black",
     label = "Centroids"
 )
-plot.xlabel("Number of Orders")
-plot.ylabel("Total Amount of Items")
-plot.title("Orders vs Items - K=2")
+plot.ylabel("Number of Orders")
+plot.xlabel("Recency")
+plot.title("Recency vs Orders - K=2")
 plot.legend()
 
 plot.figure()
 plot.scatter(customer_metrics_df["Orders"],customer_metrics_df["Total Spent"], c=kmeans_2.labels_, alpha=0.3, s = 10)
 plot.scatter(
     centroids_2[:, 0], 
-    centroids_2[:, 2],
+    centroids_2[:, 1],
     marker ="X",
     s = 50,
     edgecolors= "black",
@@ -104,6 +112,23 @@ plot.title("Orders vs Total Spent - K=2")
 plot.legend()
 print(kmeans_2.labels_)
 print(centroids_2)
+
+plot.figure()
+plot.scatter(customer_metrics_df["Recency"],customer_metrics_df["Total Spent"], c=kmeans_2.labels_, alpha=0.3, s = 10)
+plot.scatter(
+    centroids_2[:, 2], 
+    centroids_2[:, 1],
+    marker ="X",
+    s = 50,
+    edgecolors= "black",
+    label = "Centroids"
+)
+plot.xlabel("Recency")
+plot.ylabel("Total Amount Spent")
+plot.title("Recency vs Total Spent - K=2")
+plot.legend()
+print(kmeans_2.labels_)
+print(centroids_2)
 ### plots for k = 2
 
 
@@ -111,25 +136,25 @@ kmeans_4 = KMeans(n_clusters= 4, random_state=42, n_init=10)
 customer_metrics_df["Cluster_4"] = kmeans_4.fit_predict(scaled_features)
 centroids_4 = scaler.inverse_transform(kmeans_4.cluster_centers_)
 plot.figure()
-plot.scatter(customer_metrics_df["Orders"],customer_metrics_df["Total Quantity"], c=kmeans_4.labels_,  alpha=0.3, s = 10)
+plot.scatter(customer_metrics_df["Recency"],customer_metrics_df["Orders"], c=kmeans_4.labels_,  alpha=0.3, s = 10)
 plot.scatter(
-    centroids_4[:, 0], 
-    centroids_4[:, 1],
+    centroids_4[:, 2], 
+    centroids_4[:, 0],
     marker ="X",
     s = 50,
     edgecolors= "black",
     label = "Centroids"
 )
-plot.xlabel("Number of Orders")
-plot.ylabel("Total Amount of Items")
-plot.title("Orders vs Items - K=4")
+plot.ylabel("Number of Orders")
+plot.xlabel("Recency")
+plot.title("Recency vs Orders- K=4")
 plot.legend()
 
 plot.figure()
 plot.scatter(customer_metrics_df["Orders"],customer_metrics_df["Total Spent"], c=kmeans_4.labels_, alpha=0.3, s = 10)
 plot.scatter(
     centroids_4[:, 0], 
-    centroids_4[:, 2],
+    centroids_4[:, 1],
     marker ="X",
     s = 50,
     edgecolors= "black",
@@ -140,13 +165,28 @@ plot.ylabel("Total Amount Spent")
 plot.title("Orders vs Total Spent - K=4")
 plot.legend()
 
+plot.figure()
+plot.scatter(customer_metrics_df["Recency"],customer_metrics_df["Total Spent"], c=kmeans_4.labels_, alpha=0.3, s = 10)
+plot.scatter(
+    centroids_4[:, 2], 
+    centroids_4[:, 1],
+    marker ="X",
+    s = 50,
+    edgecolors= "black",
+    label = "Centroids"
+)
+plot.xlabel("Recency")
+plot.ylabel("Total Amount Spent")
+plot.title("Recency vs Total Spent - K=4")
+plot.legend()
 print(kmeans_4.labels_)
 print(centroids_4)
+### plots for K=4
 
-K2_df = customer_metrics_df.groupby("Cluster_2")[["Orders", "Total Quantity", "Total Spent"]].mean()
+K2_df = customer_metrics_df.groupby("Cluster_2")[["Orders", "Recency", "Total Spent"]].mean()
 K2_df["Customers"] = customer_metrics_df["Cluster_2"].value_counts()
 
-K4_df = customer_metrics_df.groupby("Cluster_4")[["Orders", "Total Quantity", "Total Spent"]].mean()
+K4_df = customer_metrics_df.groupby("Cluster_4")[["Orders", "Recency", "Total Spent"]].mean()
 K4_df["Customers"] = customer_metrics_df["Cluster_4"].value_counts()
 
 print(K2_df)

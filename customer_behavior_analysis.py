@@ -1,8 +1,9 @@
 import pandas as pd
 import matplotlib.pyplot as plot
 
+
 df = pd.read_csv("data/retail_data.csv", encoding="latin1")
-df = df.drop(columns=['Country', 'Description','InvoiceDate'])
+df = df.drop(columns=['Country', 'Description'])
 
 fault_StockCode = ["POST", "DOT", "D"]
 
@@ -10,6 +11,7 @@ df = df.dropna()
 df = df[df["Quantity"] > 0]
 df = df[df["UnitPrice"] > 0]
 df = df[~df["StockCode"].isin(fault_StockCode)]
+df["InvoiceDate"] = pd.to_datetime(df["InvoiceDate"])
 
 
 stock_codes = df["StockCode"]
@@ -69,12 +71,19 @@ print(top_returning_customers)
 total_quantity_per_customer= df["Quantity"].groupby(df["CustomerID"]).sum()
 total_spent_per_customer = df["Quantity"].mul(df["UnitPrice"]).groupby(df["CustomerID"]).sum()
 average_order_value = total_spent_per_customer/orders_per_customer
+recent_date = df["InvoiceDate"].max()
+print(f"Most recent date : {recent_date}")
+recent_customer_order = df["InvoiceDate"].groupby(df["CustomerID"]).max()
+recency_delta = recent_date - recent_customer_order
+recency = recency_delta.dt.days
+### RFM
 
 customer_metrics_df = pd.DataFrame({
     "Orders": orders_per_customer, 
     "Total Quantity": total_quantity_per_customer, 
     "Total Spent": total_spent_per_customer, 
-    "Average Order Value": average_order_value
+    "Average Order Value": average_order_value,
+    "Recency": recency
 })
 
 print(customer_metrics_df.head())
@@ -88,38 +97,21 @@ plot.bar(order_counts.index, order_counts.values)
 plot.xlabel("Number of Orders")
 plot.ylabel("Number of Customers")
 plot.title("Customer Order Frequency")
+plot.savefig("images/Customer Order Frequency.png")
 
 plot.figure()
 plot.hist(customer_metrics_df["Total Spent"], bins=30)
 plot.xlabel("Total Amount Spent")
 plot.ylabel("Number of Customers")
 plot.title("Total Customer Spending")
+plot.savefig("images/Total Customer Spending.png")
 
 plot.figure()
 plot.scatter(customer_metrics_df["Orders"],customer_metrics_df["Total Spent"], alpha=0.3, s = 10 )
 plot.xlabel("Number of Orders")
 plot.ylabel("Total Amount Spent")
 plot.title("Orders vs Total Spent")
-
-plot.figure()
-plot.scatter(customer_metrics_df["Total Quantity"],customer_metrics_df["Total Spent"],  alpha=0.3, s = 10 )
-plot.xlabel("Number of Items")
-plot.ylabel("Total Amount Spent")
-plot.title("Items vs Total Spent")
-
-plot.figure()
-plot.scatter(customer_metrics_df["Orders"],customer_metrics_df["Total Quantity"],  alpha=0.3, s = 10 )
-plot.xlabel("Number of Orders")
-plot.ylabel("Total Amount of Items")
-plot.title("Orders vs Items")
-
-
-plot.figure()
-plot.scatter(customer_metrics_df["Orders"],customer_metrics_df["Average Order Value"],  alpha=0.3, s = 10 )
-plot.xlabel("Number of Orders")
-plot.ylabel("Average Order Value")
-plot.title("Orders vs Average Order Value")
-plot.show()
+plot.savefig("images/Orders vs Total Spent.png")
 
 print(customer_metrics_df[["Orders", "Total Spent"]].corr())
 print(customer_metrics_df[["Orders", "Total Quantity"]].corr())
