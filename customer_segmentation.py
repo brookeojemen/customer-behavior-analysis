@@ -45,6 +45,9 @@ for i in range (1,cluster_k+1):
     elbow_k_values.append(kmeans.inertia_)
 
 plot.plot(range(1,cluster_k + 1), elbow_k_values, marker = "o")
+for k, inertia in zip(range(1, cluster_k+1), elbow_k_values):
+    plot.text(k, inertia, f"{inertia:.1f}", fontsize=8, ha="center", va="bottom") 
+print(f"Inertia:{elbow_k_values}" )
 plot.xlabel("Number of Clusters")
 plot.ylabel("Inertia")
 plot.title("Elbow Plot")
@@ -76,12 +79,13 @@ plot.scatter(
     centroids_2[:, 0], 
     centroids_2[:, 1],
     marker ="X",
-    s = 20,
+    s = 50,
+    edgecolors= "black",
     label = "Centroids"
 )
 plot.xlabel("Number of Orders")
 plot.ylabel("Total Amount of Items")
-plot.title("Orders vs Items")
+plot.title("Orders vs Items - K=2")
 plot.legend()
 
 plot.figure()
@@ -90,12 +94,13 @@ plot.scatter(
     centroids_2[:, 0], 
     centroids_2[:, 2],
     marker ="X",
-    s = 20,
+    s = 50,
+    edgecolors= "black",
     label = "Centroids"
 )
 plot.xlabel("Number of Orders")
 plot.ylabel("Total Amount Spent")
-plot.title("Orders vs Total Spent")
+plot.title("Orders vs Total Spent - K=2")
 plot.legend()
 print(kmeans_2.labels_)
 print(centroids_2)
@@ -111,12 +116,13 @@ plot.scatter(
     centroids_4[:, 0], 
     centroids_4[:, 1],
     marker ="X",
-    s = 20,
+    s = 50,
+    edgecolors= "black",
     label = "Centroids"
 )
 plot.xlabel("Number of Orders")
 plot.ylabel("Total Amount of Items")
-plot.title("Orders vs Items")
+plot.title("Orders vs Items - K=4")
 plot.legend()
 
 plot.figure()
@@ -125,12 +131,13 @@ plot.scatter(
     centroids_4[:, 0], 
     centroids_4[:, 2],
     marker ="X",
-    s = 20,
+    s = 50,
+    edgecolors= "black",
     label = "Centroids"
 )
 plot.xlabel("Number of Orders")
 plot.ylabel("Total Amount Spent")
-plot.title("Orders vs Total Spent")
+plot.title("Orders vs Total Spent - K=4")
 plot.legend()
 
 print(kmeans_4.labels_)
