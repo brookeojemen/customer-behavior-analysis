@@ -102,17 +102,3 @@ SELECT
 FROM customer_data_clean
 GROUP BY strftime('%w', InvoiceDateISO)
 ORDER BY TotalRevenue DESC;
-
-SELECT
-    AVG(OrderTotal) AS AverageOrderValue
-FROM(
-    SELECT
-        InvoiceNo,
-        SUM(Quantity * UnitPrice) AS OrderTotal
-    From customer_data_clean
-    GROUP BY InvoiceNo
-);
-
-SELECT *
-FROM customer_summary
-LIMIT 10;
