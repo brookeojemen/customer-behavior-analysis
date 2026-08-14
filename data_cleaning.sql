@@ -39,7 +39,7 @@ DELETE FROM customer_data_clean
 WHERE UnitPrice <= 0;
 
 DELETE FROM customer_data_clean
-WHERE StockCode IN ('POST','DOT','D');
+WHERE StockCode IN ('POST','DOT','D', 'M');
 
 ALTER TABLE customer_data_clean
 ADD COLUMN InvoiceDateISO TEXT;
