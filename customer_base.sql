@@ -156,19 +156,4 @@ SELECT *
 FROM customer_summary
 LIMIT 10;
 
-SELECT
-    c.CustomerID,
-    c.TotalOrders,
-    c.TotalQuantity,
-    c.TotalSpent,
-    COUNT(d.StockCode) AS TransactionRows
-FROM customer_summary AS c
-JOIN customer_data_clean AS d
-    ON c.CustomerID = d.CustomerID
-GROUP BY
-    c.CustomerID,
-    c.TotalOrders,
-    c.TotalQuantity,
-    c.TotalSpent
-ORDER BY c.TotalSpent DESC
-LIMIT 10;   
+
