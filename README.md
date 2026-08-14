@@ -9,10 +9,10 @@ purchasing behavior, creating features that can be used for applying KMeans clus
 identify an appropriate clustering solution. The output is four customer segments that represent distinct purchasing behaviors.
 
 It answers questions like:
-    - **Which products are being bought most frequently?**
-    - **Which products generate the most revenue?**
-    - **How often do customers return?**
-    - **Can customers be grouped into distinct purchasing segments based on their behavior?**
+- **Which products are being bought most frequently?**
+- **Which products generate the most revenue?**
+- **How often do customers return?**
+- **Can customers be grouped into distinct purchasing segments based on their behavior?**
 
 ## Table of Contents
 - [Project Overview](#project-overview)
