@@ -56,7 +56,7 @@ It answers questions like:
 Before performing the analysis, I prepared the dataset by:
 - Removing rows that had missing values.
 - Removing columns that did not contain information relevant to the analysis.
-- Removing rows with StockCode values (POST, DOT, and D) that represent non-product transactions or incomplete orders.
+- Removing rows with StockCode values (POST, DOT, D, and M) that represent non-product transactions or incomplete orders.
 - Removing rows that had missing customer IDs.
 
 The analysis focuses primarily on:
