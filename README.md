@@ -222,6 +222,8 @@ This visualization highlights differences between customer segments based on cus
 
 ## Tableau
 
+- Different diagrams revealing important data from the data set, an example being which product and customer brings in the most revenue. 
+
 ## Key Findings
 
 - The most frequently purchased product was StockCode 85123A.
