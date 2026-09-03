@@ -32,6 +32,7 @@ It answers questions like:
   - [Final K-Means Model](#final-k-means-model)
   - [Cluster Summary](#cluster-summary)
   - [Cluster Visualizations](#cluster-visualizations)
+- [Tableau](#tableau)
 - [Key Findings](#key-findings)
 - [Conclusion](#conclusion)
 - [Current Limitations](#current-limitations)
@@ -218,6 +219,8 @@ This visualization shows how the four customer segments differ based on purchase
 
 This visualization highlights differences between customer segments based on customer value and purchasing activity. It helps identify valuable active customers as well as customers who may require re-engagement.
 
+
+## Tableau
 
 ## Key Findings
 
